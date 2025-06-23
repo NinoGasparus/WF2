@@ -1,1 +1,10 @@
-mainmain
+
+
+
+
+
+int main(){
+
+  return 0;
+
+}
