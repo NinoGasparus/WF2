@@ -9,6 +9,9 @@
 extern void render(int  x, int y, uint8_t* mem);
 
 extern void computeBasic(int x, int y, int mit, uint8_t* data);
+extern void computeSimpleOptimised(int x, int y, int mit, uint8_t* mem);
+extern void computeAdvancedOptimised(int x, int y, int mit, uint8_t* mem);
+extern void computeAdvancedOptimised2(int x, int y, int mit, uint8_t* mem);
 int mit =100;
 int x = 1920;
 int y = 1080;
@@ -34,6 +37,7 @@ int main(int argc, char* argv[]){
     }
   }
 
+
   if(argc >=3){
     try{
       if(argv[2][0] == 'a'){
@@ -46,8 +50,11 @@ int main(int argc, char* argv[]){
   for(int i =0 ; i < renderCount; i++){
     auto start = std::chrono::high_resolution_clock::now();
     
-    computeBasic(x,y, mit, mem);
-    
+  //  computeBasic(x,y, mit, mem);
+  // computeSimpleOptimised(x,y, mit, mem);
+//    computeAdvancedOptimised(x, y, mit, mem);
+
+    computeAdvancedOptimised2(x, y, mit, mem);
     auto end  = std::chrono::high_resolution_clock::now();
     
 
@@ -62,9 +69,9 @@ int main(int argc, char* argv[]){
 
 
 
-  if(argc >= 5){
+  if(argc >=3){
     try{
-      if(argv[4][0] == 'r'){
+      if(argc >= 2 && (argv[4][0] == 'r' ||argv[2][0] == 'r')){
        render(x, y,mem);
       }
     }catch(std::exception e){
