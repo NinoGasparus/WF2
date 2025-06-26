@@ -3,6 +3,13 @@
 #include <cstring>
 #include <iostream>
 
+#include <SDL2/SDL.h>
+#include <GL/gl.h>
+#include <stdlib.h>
+#include <sys/types.h>
+
+
+
 
 
 //convert 8bit ints to chars for viewing
@@ -82,3 +89,94 @@ void render(int x, int y, uint8_t* data){
   
 
 }
+
+
+
+
+
+
+
+
+GLuint create_texture(int WIDTH, int HEIGHT) {
+    GLuint tex;
+    glGenTextures(1, &tex);
+    glBindTexture(GL_TEXTURE_2D, tex);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, WIDTH, HEIGHT, 0, GL_RGBA, GL_UNSIGNED_BYTE, NULL);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+    return tex;
+}
+
+void draw_fullscreen_quad() {
+    glBegin(GL_QUADS);
+    glTexCoord2f(0, 0); glVertex2f(-1, -1);
+    glTexCoord2f(1, 0); glVertex2f( 1, -1);
+    glTexCoord2f(1, 1); glVertex2f( 1,  1);
+    glTexCoord2f(0, 1); glVertex2f(-1,  1);
+    glEnd();
+}
+
+
+
+extern int mit; 
+void colorPixles(uint8_t* data, int dataLen, uint32_t* out){
+  for(int i =0; i < dataLen; i++){
+    float  x = data[i]/(mit * 1.0);
+
+    uint8_t r = (uint8_t)(9 * (1-x) * x* x* x * 255);
+    uint8_t g = (uint8_t)(15 * (1-x) * (1-x) * x * x * 255);
+    uint8_t b = (uint8_t)(8.5 * (1-x) * (1-x) * (1-x) * x * 255);
+    if(data[i] == 0){
+      r = 0;
+      g = 0;
+      b = 0;
+    }
+    uint32_t v = 0x00000000;
+    v |= 0xFF;
+    v <<= 8;
+    v |= b;
+    v <<= 8;
+    v |= g;
+    v <<= 8;
+    v |= r;
+    out[i] = v;
+  }
+}
+
+
+void render2(int WIDTH, int HEIGHT, uint8_t* data ) {
+    uint32_t* pixels = new uint32_t[WIDTH* HEIGHT];
+    colorPixles(data,WIDTH*HEIGHT , pixels);
+    SDL_Init(SDL_INIT_VIDEO);
+
+    SDL_Window* window = SDL_CreateWindow("Window",
+        SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED,
+        WIDTH, HEIGHT, SDL_WINDOW_OPENGL);
+
+    SDL_GLContext gl_context = SDL_GL_CreateContext(window);
+
+    glEnable(GL_TEXTURE_2D);
+    GLuint texture = create_texture(WIDTH, HEIGHT);
+
+
+
+    int running = 1;
+    SDL_Event event;
+    while (running) {
+        while (SDL_PollEvent(&event)) {
+            if (event.type == SDL_QUIT) running = 0;
+        }
+
+        glBindTexture(GL_TEXTURE_2D, texture);
+        glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, WIDTH, HEIGHT, GL_RGBA, GL_UNSIGNED_BYTE, pixels);
+
+        glClear(GL_COLOR_BUFFER_BIT);
+        draw_fullscreen_quad();
+        SDL_GL_SwapWindow(window);
+    }
+    glDeleteTextures(1, &texture);
+    SDL_GL_DeleteContext(gl_context);
+    SDL_DestroyWindow(window);
+    SDL_Quit();
+}
+

@@ -7,6 +7,7 @@
 
 
 extern void render(int  x, int y, uint8_t* mem);
+extern void render2(int  x, int y, uint8_t* mem);
 
 extern void computeBasic(int x, int y, int mit, uint8_t* data);
 extern void computeSimpleOptimised(int x, int y, int mit, uint8_t* mem);
@@ -71,8 +72,10 @@ int main(int argc, char* argv[]){
 
   if(argc >=3){
     try{
-      if(argc >= 2 && (argv[4][0] == 'r' ||argv[2][0] == 'r')){
+      if(argc >= 2 && (argv[4][0] == 'r' ||argv[2][0] == 'r' && argv[4][1] != 'v' && argv[2][1] != 'v')){
        render(x, y,mem);
+      }else if(argv[4][1] == 'v' || argv[2][1] == 'v'){
+        render2(x,y,mem);
       }
     }catch(std::exception e){
 
