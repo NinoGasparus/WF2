@@ -15,6 +15,7 @@ extern void computeAdvancedOptimised(int x, int y, int mit, uint8_t* mem);
 extern void computeAdvancedOptimised2(int x, int y, int mit, uint8_t* mem);
 extern void computeAdvancedOptimised3(int x, int y, int mit, uint8_t* mem);
 extern void computeAdvancedOptimised4(int x, int y, int mit, uint8_t* mem);
+extern void computeUnrolled(int x, int y, int mit, uint8_t* mem);
 int mit =100;
 int x = 1920;
 int y = 1080;
@@ -53,13 +54,14 @@ int main(int argc, char* argv[]){
   for(int i =0 ; i < renderCount; i++){
     auto start = std::chrono::high_resolution_clock::now();
     
-  // computeBasic(x,y, mit, mem);
-// computeSimpleOptimised(x,y, mit, mem);
-//    computeAdvancedOptimised(x, y, mit, mem);
-
-//    computeAdvancedOptimised2(x, y, mit, mem);
+//      computeBasic(x,y, mit, mem);
+//      computeSimpleOptimised(x,y, mit, mem);
+//      computeAdvancedOptimised(x, y, mit, mem);
+//      computeAdvancedOptimised2(x, y, mit, mem);
 //      computeAdvancedOptimised3(x, y, mit,  mem);
-computeAdvancedOptimised4(x, y, mit, mem);
+//      computeAdvancedOptimised4(x, y, mit, mem);
+        computeUnrolled(x, y, mit, mem);
+
     auto end  = std::chrono::high_resolution_clock::now();
     
 

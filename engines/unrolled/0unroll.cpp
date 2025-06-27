@@ -1,4 +1,5 @@
 
+#include <cmath>
 #include <cstdint>
 #include <cstdio>
 #include <cstdlib>
@@ -7,14 +8,13 @@
 
 
 /*
- * r2, can be precomputed, 
  *
  *
- * precomputing rr or ii negativeley impacts performance.- 
+ *
  */
 
 
-void computeAdvancedOptimised4(int x, int y, int mit, uint8_t* mem){
+void computeUnrolled(int x, int y, int mit, uint8_t* mem){
   double x0, y0, r, i, a;
   double minX = -2;
   double maxX = 1;
@@ -35,22 +35,24 @@ void computeAdvancedOptimised4(int x, int y, int mit, uint8_t* mem){
    
   int jx = 0;  
   void* labels[] = {&&noAction, &&stop};
-
-  for(int iy = 0; iy < y; iy++){
+  #pragma  GCC unroll 108
+  for(int iy = 0; iy < 1080; iy++){
     r2 = iy * x;
-    while(jx < x){
+    #pragma GCC unroll 192
+    while(jx < 1920){
       
       r = x0;
       i  = y0;
       c  = 0; 
-      
-      while(c <mit){
+      #pragma GCC unroll 100
+      while(c <1000){
         //rr = r* r;
         //ii = i * i;
         a = r * r - i * i + x0;
         i = 2 * r * i + y0;
         r = a;
-
+        //sneaky laggy in the pocked 
+        float x = std::sin(std::atan2(a,x));
         goto *labels[r*r+ i * i >= 4];
         stop:
           break;
