@@ -13,7 +13,9 @@
 * imag :       2 * r * i + i0
 * 
 * 7 flops instead of 8
+* 
 *
+* also remove all variable declarations out of the loop
 *
 *
 * */
@@ -39,7 +41,6 @@ void computeSimpleOptimised(int x, int y, int mit, uint8_t* mem){
         a = r * r - i * i + x0;
         i = 2 * r * i + y0;
         r = a;
-
         if(r * r + i * i > 4){
           mem[iy * x + jx] =  (uint8_t)map(c, 0,mit, 0, 255);
           break;
