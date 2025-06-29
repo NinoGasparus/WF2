@@ -1,4 +1,5 @@
 main
 notes
 callgrind*
-
+*.s
+*.o
