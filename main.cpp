@@ -33,6 +33,7 @@ int main(int argc, char* argv[]){
     try {
       if(argv[1][0] != 'r'){
         mit = std::stoi(argv[1]);
+ 
       }else{
         mit = 1000;
       }
@@ -58,9 +59,9 @@ int main(int argc, char* argv[]){
 //      computeSimpleOptimised(x,y, mit, mem);
 //      computeAdvancedOptimised(x, y, mit, mem);
 //      computeAdvancedOptimised2(x, y, mit, mem);
-//      computeAdvancedOptimised3(x, y, mit,  mem);
-//      computeAdvancedOptimised4(x, y, mit, mem);
-        computeUnrolled(x, y, mit, mem);
+        computeAdvancedOptimised3(x, y, mit,  mem);
+    
+ //       computeUnrolled(x, y, mit, mem);
 
     auto end  = std::chrono::high_resolution_clock::now();
     

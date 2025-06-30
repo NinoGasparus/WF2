@@ -68,7 +68,5 @@ void computeUnrolled(int x, int y, int mit, uint8_t* mem){
     jx = 0; 
   }
  
-}
-
-
+ }
 
