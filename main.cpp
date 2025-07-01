@@ -10,8 +10,9 @@ extern void render(int  x, int y, uint8_t* mem);
 extern void render2(int  x, int y, uint8_t* mem);
 
 extern void printMem(uint8_t* mem, int amt);
+extern void compareAlg(void (*alg1) (int, int, int, uint8_t *), void (*alg2) (int, int, int, uint8_t*));
+extern void scramble(int x, int y, int mit, uint8_t* mem);
 
-extern void computeBasic(int x, int y, int mit, uint8_t* data);
 extern void computeSimpleOptimised(int x, int y, int mit, uint8_t* mem);
 extern void computeAdvancedOptimised(int x, int y, int mit, uint8_t* mem);
 extern void computeAdvancedOptimised2(int x, int y, int mit, uint8_t* mem);
@@ -86,7 +87,7 @@ if(!benchmark){    std::cout <<  time << std::endl;}
   }
 
   if(benchmark){
-  printMem(mem, x * y);
+    compareAlg(computeAdvancedOptimised4,scramble);
   }
 
 
