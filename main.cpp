@@ -55,12 +55,12 @@ int main(int argc, char* argv[]){
   for(int i =0 ; i < renderCount; i++){
     auto start = std::chrono::high_resolution_clock::now();
     
-//      computeBasic(x,y, mit, mem);
-//      computeSimpleOptimised(x,y, mit, mem);
-//      computeAdvancedOptimised(x, y, mit, mem);
-//      computeAdvancedOptimised2(x, y, mit, mem);
-        computeAdvancedOptimised3(x, y, mit,  mem);
-    
+      //computeBasic(x,y, mit, mem);
+     // computeSimpleOptimised(x,y, mit, mem);
+  //  computeAdvancedOptimised(x, y, mit, mem);
+   // computeAdvancedOptimised2(x, y, mit, mem);
+ //       computeAdvancedOptimised3(x, y, mit,  mem);
+   computeAdvancedOptimised4(x, y, mit,  mem);
  //       computeUnrolled(x, y, mit, mem);
 
     auto end  = std::chrono::high_resolution_clock::now();

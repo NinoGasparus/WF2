@@ -49,9 +49,9 @@ void computeAdvancedOptimised3(int x, int y, int mit, uint8_t* mem){
 
         goto *labels[r *r + i *i > 4];
         stop:
-          break;
+         break;
         noAction:
-       // if( r * r + i * i > 4){break;}
+//        if( r * r + i * i > 4){break;}
         c++;
       }
         mem[iy * x+ jx] =(uint8_t) !(c == mit)  * (c*r1) ; 
