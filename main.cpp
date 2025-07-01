@@ -9,6 +9,8 @@
 extern void render(int  x, int y, uint8_t* mem);
 extern void render2(int  x, int y, uint8_t* mem);
 
+extern void printMem(uint8_t* mem, int amt);
+
 extern void computeBasic(int x, int y, int mit, uint8_t* data);
 extern void computeSimpleOptimised(int x, int y, int mit, uint8_t* mem);
 extern void computeAdvancedOptimised(int x, int y, int mit, uint8_t* mem);
@@ -24,14 +26,25 @@ int y = 1080;
 int renderCount = 1;
 uint8_t* mem = new uint8_t[x* y];
 
-
+bool benchmark = false;
 
 
 
 int main(int argc, char* argv[]){
   if(argc >=2){
+    try{
+      if(argv[1][0] == 'B'){
+        benchmark = true;
+        mit = 10000;
+      }
+    
+    }catch(std::exception x){
+
+    }
+  }
+  if(argc >=2){
     try {
-      if(argv[1][0] != 'r'){
+      if(argv[1][0] != 'r' && !benchmark){
         mit = std::stoi(argv[1]);
  
       }else{
@@ -45,7 +58,7 @@ int main(int argc, char* argv[]){
 
   if(argc >=3){
     try{
-      if(argv[2][0] == 'a'){
+      if(argv[2][0] == 'a' && !benchmark){
        renderCount = std::stoi(argv[3]);
       }
     }catch(std::exception x){
@@ -69,15 +82,15 @@ int main(int argc, char* argv[]){
 
 
     unsigned long  time =  std::chrono::duration_cast<std::chrono::microseconds>(end-start).count();
-    std::cout <<  time << std::endl;
+if(!benchmark){    std::cout <<  time << std::endl;}
+  }
+
+  if(benchmark){
+  printMem(mem, x * y);
   }
 
 
-
-
-
-
-  if(argc >=3){
+  if(argc >=3 && !benchmark){
     try{
       if(argc >= 2 && (argv[4][0] == 'r' ||argv[2][0] == 'r' && argv[4][1] != 'v' && argv[2][1] != 'v')){
        render(x, y,mem);
