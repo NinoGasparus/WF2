@@ -13,6 +13,9 @@ extern void printMem(uint8_t* mem, int amt);
 extern void compareAlg(void (*alg1) (int, int, int, uint8_t *), void (*alg2) (int, int, int, uint8_t*));
 extern void scramble(int x, int y, int mit, uint8_t* mem);
 
+
+
+extern void computeBasic(int x, int y, int mit, uint8_t* mem);
 extern void computeSimpleOptimised(int x, int y, int mit, uint8_t* mem);
 extern void computeAdvancedOptimised(int x, int y, int mit, uint8_t* mem);
 extern void computeAdvancedOptimised2(int x, int y, int mit, uint8_t* mem);
@@ -71,8 +74,8 @@ int main(int argc, char* argv[]){
     
       //computeBasic(x,y, mit, mem);
      // computeSimpleOptimised(x,y, mit, mem);
-  //  computeAdvancedOptimised(x, y, mit, mem);
-   // computeAdvancedOptimised2(x, y, mit, mem);
+   //computeAdvancedOptimised(x, y, mit, mem);
+    //computeAdvancedOptimised2(x, y, mit, mem);
  //       computeAdvancedOptimised3(x, y, mit,  mem);
    computeAdvancedOptimised4(x, y, mit,  mem);
  //       computeUnrolled(x, y, mit, mem);
@@ -87,7 +90,7 @@ if(!benchmark){    std::cout <<  time << std::endl;}
   }
 
   if(benchmark){
-    compareAlg(computeAdvancedOptimised4,scramble);
+    compareAlg(computeBasic,computeAdvancedOptimised4);
   }
 
 

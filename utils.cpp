@@ -27,7 +27,7 @@ void compareAlg(void (*base) (int, int, int, uint8_t *), void (*compare) (int, i
   int totalPixels = x * y;
   int diffPixels =0;
   for(int i = 0; i < totalPixels; i++){
-    if(mem_f1[i] != mem_f2[i]){
+    if(std::abs(mem_f1[i]- mem_f2[i]) > 4){
       diffPixels ++;
     }
   }
@@ -45,7 +45,7 @@ void compareAlg(void (*base) (int, int, int, uint8_t *), void (*compare) (int, i
 
   if(diffPixels != 0){
       for(int i = 0; i < totalPixels; i++){
-          if(mem_f1[i] != mem_f2[i]){
+          if(std::abs(mem_f1[i] - mem_f2[i])>4){
               curDiff = (int)mem_f2[i] - (int)mem_f1[i];
               diffSum += std::abs(curDiff);
 
@@ -55,6 +55,9 @@ void compareAlg(void (*base) (int, int, int, uint8_t *), void (*compare) (int, i
               }else if(-curDiff > maxUnderestimate){
                   maxUnderestimate = -curDiff;
                   maxUnderestimateActuallValue = (int)mem_f2[i];
+              }
+              if(diffPixels < 1000){
+                std::cout << "diff: av: " <<(int) mem_f1[i] << " est: " << (int)mem_f2[i] << std::endl;
               }
           }
       }

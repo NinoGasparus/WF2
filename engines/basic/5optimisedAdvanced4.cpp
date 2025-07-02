@@ -16,8 +16,8 @@
 
 void computeAdvancedOptimised4(int x, int y, int mit, uint8_t* mem){
   double x0, y0, r, i, a;
-  double minX = -2;
-  double maxX = 1;
+  double minX = -2.0;
+  double maxX = 1.0;
 
   double minY = -1.75;
   double maxY = 1.75;
@@ -27,8 +27,8 @@ void computeAdvancedOptimised4(int x, int y, int mit, uint8_t* mem){
   
   double r1 = 255.0 /mit;
   int r2;
-  double dx0 = std::abs(minX-maxX) /x;
-  double dy0 = std::abs(minY-maxY) /y;
+  double dx0 = std::fabs(minX-maxX) /x;
+  double dy0 = std::fabs(minY-maxY) /y;
 
   
   int c = 0;
@@ -50,22 +50,23 @@ void computeAdvancedOptimised4(int x, int y, int mit, uint8_t* mem){
               
               while(true){
                 a = r* r - i * i + x0;
-                i = 2 * r * i + y0;
+                i = 2.0 * r * i + y0;
                 r = a;
 
-                if(r *r + i * i > 4 || c>=mit){
+                if(r *r + i * i > 4.0 || c++>mit){
                   break;
                 }
-                c++;
               }
-              mem[r2+ jx] =(uint8_t) !(c == mit)  * (c*r1) ; 
+              mem[r2+ jx] =(uint8_t) ((int)!(c == mit))  * (c*r1) ; 
               x0 += dx0;
+//                x0 = minX + jx * dx0;
               jx ++;
               goto *loop2Labels[jx < x];
           }
       exit2:
       y0 += dy0;
-      x0 = -2;
+//        y0 = minY + iy * dy0;
+      x0 = -2.0;
       jx = 0; 
       iy ++;
       goto *loop1Labels[iy < y];

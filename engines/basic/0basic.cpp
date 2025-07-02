@@ -1,7 +1,7 @@
 
 #include <cstdint>
 
-double map(float x, float in_min, float in_max, float out_min, float out_max) {
+double map(double x, double in_min, double in_max, double out_min, double out_max) {
     return out_min + (x - in_min) * (out_max - out_min) / (in_max - in_min);
 }
 
@@ -10,8 +10,8 @@ void computeBasic(int x, int y, int mit, uint8_t* mem){
   for(int iy = 0; iy < y; iy++){
     for(int jx = 0; jx < x; jx++){
 
-      double x0 = map(jx, 0, x, -2, 1);
-      double y0 = map(iy, 0, y, -1.75, 1.75);
+      double x0 = map(jx, 0.0, x, -2.0, 1.0);
+      double y0 = map(iy, 0.0, y, -1.75, 1.75);
 
       double r = x0;
       double i  = y0;
@@ -19,8 +19,8 @@ void computeBasic(int x, int y, int mit, uint8_t* mem){
       int c  = 0; 
       while(c++ <mit){
         double a = r * r;
-        double b = 2 * r * i;
-        double d = i * i * -1;
+        double b = 2.0 * r * i;
+        double d = i * i * -1.0;
 
         double e = a + d + x0;
         double f = b + y0;

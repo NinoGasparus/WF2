@@ -19,7 +19,7 @@
 *
 *
 * */
-static double map(float x, float in_min, float in_max, float out_min, float out_max) {
+static double map(double x, double in_min,  double in_max, double out_min, double out_max) {
     return out_min + (x - in_min) * (out_max - out_min) / (in_max - in_min);
 }
 
@@ -55,4 +55,19 @@ void computeSimpleOptimised(int x, int y, int mit, uint8_t* mem){
 }
 
 
+// 0 + (c - 0) * (255 - 0) /(mit - 0)
+// 0 + c * 255 /mit
+// c * 255/mit
 
+// map(jx, 0, x, -2 , 1)
+// -2 + (jx - 0) * (1 - -2)/x -0)
+// -2 + jx * 3 /x
+// -2 + jx * 3/x
+
+//map(iy, 0, y, -1.75, 1.75)
+//
+//-1.75 + (iy - 0) *(1.75 - -1.75) / (y - 0)
+//-1.75 + iy * (3.5) /y
+//-1.75 + iy  * 3.5 /y;
+//
+//
