@@ -53,11 +53,12 @@ void computeAdvancedOptimised4(int x, int y, int mit, uint8_t* mem){
                 i = 2.0 * r * i + y0;
                 r = a;
 
-                if(r *r + i * i > 4.0 || c++>mit){
+                if(r *r + i * i > 4.0 || c==mit){
                   break;
                 }
+        c++;
               }
-              mem[r2+ jx] =(uint8_t) ((int)!(c == mit))  * (c*r1) ; 
+              mem[r2+ jx] =(uint8_t) (!(c == mit))  * (c*r1) ; 
               x0 += dx0;
 //                x0 = minX + jx * dx0;
               jx ++;
