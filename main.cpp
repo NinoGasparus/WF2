@@ -21,7 +21,10 @@ extern void computeAdvancedOptimised(int x, int y, int mit, uint8_t* mem);
 extern void computeAdvancedOptimised2(int x, int y, int mit, uint8_t* mem);
 extern void computeAdvancedOptimised3(int x, int y, int mit, uint8_t* mem);
 extern void computeAdvancedOptimised4(int x, int y, int mit, uint8_t* mem);
-extern void computeUnrolled(int x, int y, int mit, uint8_t* mem);
+
+
+extern void comConvDetect(int x, int y, int mit, uint8_t* mem);
+
 int mit =100;
 int x = 1920;
 int y = 1080;
@@ -77,9 +80,8 @@ int main(int argc, char* argv[]){
    //computeAdvancedOptimised(x, y, mit, mem);
     //computeAdvancedOptimised2(x, y, mit, mem);
  //       computeAdvancedOptimised3(x, y, mit,  mem);
-   computeAdvancedOptimised4(x, y, mit,  mem);
- //       computeUnrolled(x, y, mit, mem);
-
+//   computeAdvancedOptimised4(x, y, mit,  mem);
+comConvDetect(x, y, mit, mem);
     auto end  = std::chrono::high_resolution_clock::now();
     
 
@@ -90,7 +92,7 @@ if(!benchmark){    std::cout <<  time << std::endl;}
   }
 
   if(benchmark){
-    compareAlg(computeBasic,computeAdvancedOptimised4);
+    compareAlg(computeBasic,comConvDetect);
   }
 
 
