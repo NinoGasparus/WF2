@@ -78,15 +78,15 @@ void render(int x, int y, uint8_t* data){
 
   preRender(newData, newlen);
 
-  char* buff = new char[x/df];
-
+  char* buff = new char[x/df +1];
+  buff [x/df] = '\0';
   for(int i = 0; i < y/df; i++){
     memcpy(buff,newData+i*(x/df), x/df);
     std::cout << buff <<  std::endl;
   }
 
   delete[] newData;
-  
+  delete[] buff;
 
 }
 
