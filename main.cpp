@@ -24,7 +24,7 @@ extern void computeAdvancedOptimised4(int x, int y, int mit, uint8_t* mem);
 
 
 extern void comConvDetect(int x, int y, int mit, uint8_t* mem);
-
+extern void comCycleDetect(int x, int y, int mit, uint8_t* mem);
 int mit =100;
 int x = 1920;
 int y = 1080;
@@ -81,7 +81,8 @@ int main(int argc, char* argv[]){
     //computeAdvancedOptimised2(x, y, mit, mem);
  //       computeAdvancedOptimised3(x, y, mit,  mem);
 //   computeAdvancedOptimised4(x, y, mit,  mem);
-comConvDetect(x, y, mit, mem);
+//comConvDetect(x, y, mit, mem);
+comCycleDetect(x, y, mit, mem);
     auto end  = std::chrono::high_resolution_clock::now();
     
 
@@ -92,7 +93,7 @@ if(!benchmark){    std::cout <<  time << std::endl;}
   }
 
   if(benchmark){
-    compareAlg(computeBasic,comConvDetect);
+    compareAlg(computeBasic,comCycleDetect);
   }
 
 
