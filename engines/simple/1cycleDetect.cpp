@@ -43,10 +43,12 @@ void comCycleDetect(int x, int y, int mit, uint8_t* mem){
 
   // write into buff  
   double buff[mit+1][2];
+  memset(buff, 0,2*(mit+1));
   //store first storeLim iterations into actuall buffer
-  int storeLim = 50;
+  int storeLim = 200;
+  storeLim =std::min(storeLim, mit);
 
-  int prec = 4;
+  int prec = 3;
 
   bool* escBuff = new bool[x * y* prec * prec ];
   memset(escBuff, 0, (x * y * prec * prec));
@@ -85,12 +87,8 @@ void comCycleDetect(int x, int y, int mit, uint8_t* mem){
               if( c == mit){
               //converged 
                 for(int i =0; i < storeLim;i++){
-                  double rT = buff[i][0] + -minX ;
-                  double iT = buff[i][1] + -minY;
-                    rT  /= (maxX -minX);
-                    iT  /= (maxY - minY);
-                    rT *= x * prec;
-                    iT *= y * prec;
+                  int rT =(int)(buff[i][0]  -minX) / (maxX - minX) * x * prec;
+                  int iT =(int)(buff[i][1]  -minY) / (maxY - minY) * y * prec;
                   escBuff[(int)iT * x * prec +(int) rT] = true;
                 }
                 
