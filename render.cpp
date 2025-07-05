@@ -1,9 +1,11 @@
+#include <SDL2/SDL_video.h>
 #include <cstdint>
 #include <cstdio>
 #include <cstring>
 #include <iostream>
 
 #include <SDL2/SDL.h>
+#include <GL/glew.h>
 #include <GL/gl.h>
 #include <stdlib.h>
 #include <sys/types.h>
@@ -95,29 +97,6 @@ void render(int x, int y, uint8_t* data){
 
 
 
-
-
-GLuint create_texture(int WIDTH, int HEIGHT) {
-    GLuint tex;
-    glGenTextures(1, &tex);
-    glBindTexture(GL_TEXTURE_2D, tex);
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, WIDTH, HEIGHT, 0, GL_RGBA, GL_UNSIGNED_BYTE, NULL);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-    return tex;
-}
-
-void draw_fullscreen_quad() {
-    glBegin(GL_QUADS);
-    glTexCoord2f(0, 0); glVertex2f(-1, -1);
-    glTexCoord2f(1, 0); glVertex2f( 1, -1);
-    glTexCoord2f(1, 1); glVertex2f( 1,  1);
-    glTexCoord2f(0, 1); glVertex2f(-1,  1);
-    glEnd();
-}
-
-
-
 extern int mit; 
 void colorPixles(uint8_t* data, int dataLen, uint32_t* out){
   for(int i =0; i < dataLen; i++){
@@ -144,39 +123,170 @@ void colorPixles(uint8_t* data, int dataLen, uint32_t* out){
 }
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+GLuint loadShader(GLenum type, const char* path) {
+    FILE* f = fopen(path, "rb");
+    if(!f){
+    std::cerr << "shader file missing" << std::endl;
+    return 0;
+    }
+    fseek(f, 0, SEEK_END);
+    size_t len = ftell(f);
+    rewind(f);
+    char* src = (char*)malloc(len + 1);
+    fread(src, 1, len, f);
+    src[len] = '\0';
+    fclose(f);
+
+    GLuint shader = glCreateShader(type);
+    glShaderSource(shader, 1, &src, NULL);
+    glCompileShader(shader);
+    free(src);
+
+    GLint success;
+    glGetShaderiv(shader, GL_COMPILE_STATUS, &success);
+    if (!success) {
+        char log[512];
+        glGetShaderInfoLog(shader, 512, NULL, log);
+        fprintf(stderr, "Shader compile error: %s\n", log);
+    }
+
+    return shader;
+}
+
+GLuint createShaderProgram() {
+    GLuint vert = loadShader(GL_VERTEX_SHADER, "shader.vert");
+    GLuint frag = loadShader(GL_FRAGMENT_SHADER, "shader.frag");
+
+    GLuint prog = glCreateProgram();
+    glAttachShader(prog, vert);
+    glAttachShader(prog, frag);
+    glLinkProgram(prog);
+
+    GLint success;
+    glGetProgramiv(prog, GL_LINK_STATUS, &success);
+    if (!success) {
+        char log[512];
+        glGetProgramInfoLog(prog, 512, NULL, log);
+        fprintf(stderr, "Shader link error: %s\n", log);
+    }
+
+    glDeleteShader(vert);
+    glDeleteShader(frag);
+    return prog;
+}
+
+
+GLuint create_texture(int WIDTH, int HEIGHT) {
+    GLuint tex;
+    glGenTextures(1, &tex);
+    glBindTexture(GL_TEXTURE_2D, tex);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RED, WIDTH, HEIGHT, 0, GL_RED, GL_UNSIGNED_BYTE, NULL);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+    return tex;
+}
+
+
+
+GLuint quadVAO = 0, quadVBO;
+void setupFullscreenQuad() {
+    float quadVertices[] = {
+        // positions   // texCoords
+        -1.0f, -1.0f,   0.0f, 0.0f,
+         1.0f, -1.0f,   1.0f, 0.0f,
+         1.0f,  1.0f,   1.0f, 1.0f,
+        -1.0f,  1.0f,   0.0f, 1.0f,
+    };
+    unsigned int indices[] = { 0, 1, 2, 0, 2, 3 };
+
+    glGenVertexArrays(1, &quadVAO);
+    glBindVertexArray(quadVAO);
+
+    glGenBuffers(1, &quadVBO);
+    glBindBuffer(GL_ARRAY_BUFFER, quadVBO);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(quadVertices), quadVertices, GL_STATIC_DRAW);
+
+    glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(float), (void*)0);
+    glEnableVertexAttribArray(0);
+
+    glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(float), (void*)(2 * sizeof(float)));
+    glEnableVertexAttribArray(1);
+}
+
+
+
+void draw_fullscreen_quad() {
+    glBindVertexArray(quadVAO);
+    glDrawArrays(GL_TRIANGLE_FAN, 0, 4);
+}
+
+
+
 void render2(int WIDTH, int HEIGHT, uint8_t* data ) {
     uint32_t* pixels = new uint32_t[WIDTH* HEIGHT];
-    colorPixles(data,WIDTH*HEIGHT , pixels);
-    SDL_Init(SDL_INIT_VIDEO);
+  for (int i = 0; i < WIDTH * HEIGHT; i++) {
+    uint8_t v = data[i]; // 0-255 grayscale
+    pixels[i] = (255u << 24)      // A = 255 (opaque)
+              | (v << 16)        // R
+              | (v << 8)         // G
+              | (v);             // B
+}
+//    colorPixles(data,WIDTH*HEIGHT , pixels);
+SDL_Init(SDL_INIT_VIDEO);
+SDL_Window* window = SDL_CreateWindow("window",SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, WIDTH, HEIGHT, SDL_WINDOW_OPENGL); 
+SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE);
+SDL_GLContext context = SDL_GL_CreateContext(window);
 
-    SDL_Window* window = SDL_CreateWindow("Window",
-        SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED,
-        WIDTH, HEIGHT, SDL_WINDOW_OPENGL);
+glewExperimental = GL_TRUE;
+if (glewInit() != GLEW_OK) {
+    std::cerr << "GLEW init failed\n";
+    exit(1);
+}
 
-    SDL_GLContext gl_context = SDL_GL_CreateContext(window);
+GLuint shaderProgram = createShaderProgram(); 
 
-    glEnable(GL_TEXTURE_2D);
-    GLuint texture = create_texture(WIDTH, HEIGHT);
+setupFullscreenQuad();
 
+GLuint texture = create_texture(WIDTH, HEIGHT);
 
+int uniformLocation = glGetUniformLocation(shaderProgram, "uTex");
 
-    int running = 1;
-    SDL_Event event;
-    while (running) {
-        while (SDL_PollEvent(&event)) {
-            if (event.type == SDL_QUIT) running = 0;
-        }
-
-        glBindTexture(GL_TEXTURE_2D, texture);
-        glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, WIDTH, HEIGHT, GL_RGBA, GL_UNSIGNED_BYTE, pixels);
-
-        glClear(GL_COLOR_BUFFER_BIT);
-        draw_fullscreen_quad();
-        SDL_GL_SwapWindow(window);
+bool running = true;
+SDL_Event event;
+while (running) {
+    while (SDL_PollEvent(&event)) {
+        if (event.type == SDL_QUIT) running = false;
     }
-    glDeleteTextures(1, &texture);
-    SDL_GL_DeleteContext(gl_context);
-    SDL_DestroyWindow(window);
-    SDL_Quit();
+
+    glClear(GL_COLOR_BUFFER_BIT);
+
+    glUseProgram(shaderProgram);
+    glBindTexture(GL_TEXTURE_2D, texture);
+    glUniform1i(uniformLocation, 0);
+
+    glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, WIDTH, HEIGHT, GL_RGBA, GL_UNSIGNED_BYTE, pixels);
+
+    draw_fullscreen_quad();
+
+    SDL_GL_SwapWindow(window);
+}
+
+glDeleteTextures(1, &texture);
+SDL_GL_DeleteContext(context);
+SDL_DestroyWindow(window);
+SDL_Quit();
 }
 
