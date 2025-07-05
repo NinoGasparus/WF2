@@ -3,3 +3,4 @@ notes
 callgrind*
 *.s
 *.o
+*.swp

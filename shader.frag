@@ -11,6 +11,9 @@ void main() {
     if (abs(x -  (1.0/255.0)) < 0.003) {
         FragColor = vec4(1.0, 0.0, 0.0, 1.0); // red if x == 1
         return;
+    }else if (abs(x- (2.0/ 255.0)) < 0.003){
+      FragColor = vec4(0.0, 1.0, 0.0, 1.0);
+      return;
     }
 
     float r = 9.0 * (1.0 - x) * pow(x, 3.0);
