@@ -76,6 +76,19 @@ void computeSimmetry(int x, int y, int mit, uint8_t* mem){
     
   }
   exit:
+  
+  int startIndex = 0;
+  for(int i0 = 0; i0 < y; i0++){
+    if(mem[x * i0] == '\0'){
+      break;
+    }
+  }
+
+  for(int i0 = startIndex; i0 < y; i0++){
+    if(mem[x * i0 ] == 0){
+      mem[x*i0] = 'a';
+    }
+  }
 
   
   return;
