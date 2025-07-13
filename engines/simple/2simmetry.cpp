@@ -4,6 +4,7 @@
 #include <cstdio>
 #include <cstdlib>
 #include <cstring>
+#include <iostream>
 
 
 
@@ -41,7 +42,6 @@ void computeSimmetry(int x, int y, int mit, uint8_t* mem){
 
   redo:
   while(true){
-      startIndex = iy;
       r2 = iy * x;
       redo2:
       while(true){
@@ -66,7 +66,7 @@ void computeSimmetry(int x, int y, int mit, uint8_t* mem){
               goto *loop2Labels[jx < x];
           }
       exit2:
-      if(y0 > 0){
+      if(y0 > 0 ){
         y0 -= dy0;
       }else{
         break;
@@ -79,10 +79,11 @@ void computeSimmetry(int x, int y, int mit, uint8_t* mem){
   }
   exit:
   
-  printf("%d\n", startIndex);
-  
+  for(int ic = iy, id = 0; ic < y; ic++, ++id){
+    for(int jc = 0; jc < x; jc ++){
+      mem[ic* x +jc] = mem[(ic - (2*id -1)) * x +  jc];
+    }
+  }
   return;
 }
-
-
 
